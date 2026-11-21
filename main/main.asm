@@ -28,8 +28,8 @@ makeSquare:
         cmp r13, 5
         je .returntoY
 
-        mov rdx, r13
-        mov rdi, r12
+        mov rdx, r12
+        mov rdi, r13
         
         mov al, '#'
         call setPixelFramebuffer
@@ -43,8 +43,8 @@ makeSquare:
         jmp .loopY
 
     .end:
-        pop r12
         pop r13
+        pop r12
         ret
 
 _start:
