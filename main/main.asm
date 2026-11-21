@@ -28,8 +28,8 @@ makeSquare:
         cmp r13, 5
         je .returntoY
 
-        mov rdx, r12
-        mov rdi, r13
+        mov rdi, r12
+        mov rsi, r13
         
         mov al, '#'
         call setPixelFramebuffer

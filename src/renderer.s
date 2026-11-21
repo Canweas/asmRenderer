@@ -2,6 +2,8 @@
 %define SPACE 32
 %define NEW_LINE 10
 
+; ARGS 1 - RDI, 2 - RSI, 3 - RDX
+
 resetFramebuffer:
     push r12
     xor r12, r12
@@ -74,27 +76,9 @@ drawFramebuffer:
         pop r13
         ret
 
-copyStringToFramebuffer:
-    push r11
-    xor r11, r11
-
-    .loop:
-        cmp r11, r10
-        je .end
-
-        mov al, [rdx + r11]
-        mov [framebuffer + r11], al
-
-        inc r11
-        jmp .loop
-
-    .end:
-        pop r11
-        ret
-
 setPixelFramebuffer:
-    imul rdx, rdx, width
-    add rdx, rdi
+    imul rdi, rdi, width
+    add rdi, rsi
     
-    mov [framebuffer + rdx], al
+    mov [framebuffer + rdi], al
     ret
