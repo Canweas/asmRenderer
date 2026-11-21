@@ -1,4 +1,4 @@
-%define RESET_CHARACTER '.'
+%define RESET_CHARACTER '#'
 %define SPACE 32
 %define NEW_LINE 10
 
@@ -18,7 +18,7 @@ resetFramebuffer:
         je .end
         
         mov al, RESET_CHARACTER
-        mov byte [framebuffer + r12], al
+        mov byte [rdi + r12], al
         inc r12
 
         jmp .loop
@@ -29,6 +29,12 @@ resetFramebuffer:
 
 ; RDI = adress of framebuffer
 drawFramebuffer:
+    push rbp
+    mov rbp, rsp
+    sub rsp, 8
+
+    mov qword [rbp - 8], rdi
+
     push r12
     push r13
 
@@ -48,8 +54,9 @@ drawFramebuffer:
         mov r10, r12
         imul r10, r10, width
         add r10, r13
-    
-        lea rsi, [framebuffer + r10]
+        
+        mov rax, [rbp - 8]
+        lea rsi, [rax + r10]
         call printChar
         
         sub rsp, 8
@@ -78,8 +85,8 @@ drawFramebuffer:
         jmp .loopY
 
     .end:
-        pop r12
         pop r13
+        pop r12
         ret
 
 ; RDI = adress of frame buffer
