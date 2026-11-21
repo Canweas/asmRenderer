@@ -2,8 +2,13 @@
 %define SPACE 32
 %define NEW_LINE 10
 
-; ARGS 1 - RDI, 2 - RSI, 3 - RDX
+; ARGS: 1 - RDI |
+;       2 - RSI |
+;       3 - RDX |
+;       4 - RCX |
+;       5 - R8
 
+; RDI = adress of framebuffer
 resetFramebuffer:
     push r12
     xor r12, r12
@@ -22,6 +27,7 @@ resetFramebuffer:
         pop r12
         ret
 
+; RDI = adress of framebuffer
 drawFramebuffer:
     push r12
     push r13
@@ -76,9 +82,21 @@ drawFramebuffer:
         pop r13
         ret
 
+; RDI = adress of frame buffer
+; RSI = X
+; RDX = Y
+; RCX = CHARACTER / cl
 setPixelFramebuffer:
-    imul rdi, rdi, width
-    add rdi, rsi
+    imul rdx, rdx, width
+    add rdx, rsi
     
-    mov [framebuffer + rdi], al
+    mov [rdi + rdx], cl
     ret
+
+; ARGS: 1 - RDI |
+;       2 - RSI |
+;       3 - RDX |
+;       4 - RCX |
+;       5 - R8
+
+
