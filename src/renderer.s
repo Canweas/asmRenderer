@@ -1,4 +1,4 @@
-%define RESET_CHARACTER '#'
+%define RESET_CHARACTER '.'
 %define SPACE 32
 %define NEW_LINE 10
 
@@ -31,7 +31,7 @@ resetFramebuffer:
 drawFramebuffer:
     push rbp
     mov rbp, rsp
-    sub rsp, 8
+    sub rsp, 16
 
     mov qword [rbp - 8], rdi
 
@@ -87,6 +87,7 @@ drawFramebuffer:
     .end:
         pop r13
         pop r12
+        leave
         ret
 
 ; RDI = adress of frame buffer
@@ -105,5 +106,16 @@ setPixelFramebuffer:
 ;       3 - RDX |
 ;       4 - RCX |
 ;       5 - R8
+
+
+
+
+
+
+
+
+
+
+
 
 
