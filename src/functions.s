@@ -21,6 +21,5 @@ read:
     ret
 
 exit:
-    mov rax, 60
-    xor rdi, rdi
-    syscall
+    xor rax, rax
+    ret

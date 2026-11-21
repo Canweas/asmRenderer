@@ -1,5 +1,5 @@
 ASM = nasm
-LINKER = ld
+CC = gcc
 
 SRC = main/main.asm
 OBJ = objs/main.o
@@ -8,20 +8,22 @@ TARGET = app
 
 FLAGS = -f elf64
 
+all: $(TARGET)
+
 $(TARGET): clean $(OBJ)
-	$(LINKER) $(OBJ) -o $(TARGET)
+	$(CC) -no-pie $(OBJ) -o $(TARGET)
 
 $(OBJ):
 	$(ASM) $(FLAGS) $(SRC) -o $(OBJ)
-
-make: $(TARGET)
 
 clean:
 	rm -f $(OBJ) $(TARGET)
 
 run:
-	./$(TARGET)
+	xterm ./$(TARGET)
 
-rundel: clean make run clean
+rundel: all
+	xterm -e ./$(TARGET)
+	rm -f $(TARGET) $(OBJ)
 
 .PHONY: make clean run rundel

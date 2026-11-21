@@ -1,44 +1,58 @@
 %include "src/functions.s"
 %include "src/renderer.s"
+%include "src/macros.s"
 
-%macro SET_PIXEL 4
-    mov rdi, %1
+%include "src/game/update.s"
+%include "src/game/draw.s"
 
-    mov rsi, %2
-    mov rdx, %3
-    
-    mov al, %4
-    mov cl, al
-
-    call setPixelFramebuffer
-%endmacro
-
-%macro RESET_FRAMEBUFFER 1
-    mov rdi, %1
-    call resetFramebuffer
-%endmacro
-
-%macro DRAW_FRAMEBUFFER 1
-    mov rdi, %1
-    call drawFramebuffer
-%endmacro
+extern usleep
 
 section .data
-    width equ 10
+    ; Framebuffer data
+    width equ 20
     height equ 10
 
+    ; Escape sequences
+    RESET_CURSOR db 27, '[', 'H'
+    RESET_CURSOR_len equ $ - RESET_CURSOR
+
+    CLEAR_SCREEN db 27, '[', '2', 'J'
+    CLEAR_SCREEN_len equ $ - CLEAR_SCREEN
+
 section .bss
+    ; Make a framebuffer
     framebuffer resb width * height
 
 section .text
-global _start
+global main
 
-_start:
-    RESET_FRAMEBUFFER framebuffer
+; reset cursor to beginning of line function
+resetCursor:
+    mov rsi, RESET_CURSOR
+    mov rdx, RESET_CURSOR_len
+    call printString
+    ret
 
-    SET_PIXEL framebuffer, 1, 1, 'o'
+; main function, but preferable to use update and draw functions
+main2:
+    mov rsi, CLEAR_SCREEN
+    mov rdx, CLEAR_SCREEN_len
+    call printString
 
-    DRAW_FRAMEBUFFER framebuffer
+    .while:
+        RESET_FRAMEBUFFER framebuffer
 
+        call update
+        call draw
 
+        DRAW_FRAMEBUFFER framebuffer
+        call resetCursor
+
+        mov rdi, 50000
+        call usleep
+
+        jmp .while
+
+main:
+    call main2
     call exit
