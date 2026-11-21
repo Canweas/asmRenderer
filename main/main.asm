@@ -1,16 +1,26 @@
 %include "src/functions.s"
 %include "src/renderer.s"
 
-%macro SET_PIXEL 3
-    mov rdi, framebuffer
+%macro SET_PIXEL 4
+    mov rdi, %1
 
-    mov rsi, %1
-    mov rdx, %2
+    mov rsi, %2
+    mov rdx, %3
     
-    mov al, %3
+    mov al, %4
     mov cl, al
 
     call setPixelFramebuffer
+%endmacro
+
+%macro RESET_FRAMEBUFFER 1
+    mov rdi, %1
+    call resetFramebuffer
+%endmacro
+
+%macro DRAW_FRAMEBUFFER 1
+    mov rdi, %1
+    call drawFramebuffer
 %endmacro
 
 section .data
@@ -24,12 +34,11 @@ section .text
 global _start
 
 _start:
-    mov rdi, framebuffer
-    call resetFramebuffer
+    RESET_FRAMEBUFFER framebuffer
 
-    SET_PIXEL 1, 1, 'o'
+    SET_PIXEL framebuffer, 1, 1, 'o'
 
-    mov rdi, framebuffer
-    call drawFramebuffer
-    
+    DRAW_FRAMEBUFFER framebuffer
+
+
     call exit
